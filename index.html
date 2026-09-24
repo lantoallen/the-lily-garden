@@ -3,51 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Lily Garden</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Coquette Bloom Box</title>
+    <!-- Include html2canvas for the image download feature -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Quicksand:wght@400;600&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #fdf5f6;
+            background-image: radial-gradient(#f7dcd9 2px, transparent 2px);
+            background-size: 30px 30px;
+            font-family: 'Quicksand', sans-serif;
+            color: #5c3a41;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* --- UI Control Panel (Sender Mode) --- */
+        .controls {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-right: 2px dashed #f5c4c9;
+            box-shadow: 10px 0 30px rgba(230, 180, 190, 0.2);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .controls h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-style: italic;
+            color: #d16b8a;
+        }
+
+        .control-group {
+            background: #fffafa;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #fce4ec;
+            box-shadow: inset 0 2px 5px rgba(255,200,210,0.1);
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #8c6b73;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px;
+            border: 1px solid #fce4ec;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            color: #d16b8a;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(209, 107, 138, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+            color: white;
+            border: none;
+            grid-column: span 2;
+            font-size: 1.1rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .action-btns button {
+            flex: 1;
+            background: #d16b8a;
+            color: white;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            height: 70px;
+            padding: 12px;
+            border: 1px solid #fce4ec;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: none;
+            background: #fff;
+        }
+
+        /* --- Receiver Greeting --- */
+        .receiver-greeting {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 30;
+        }
+        .receiver-greeting h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #d16b8a;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+
+        /* --- 3D Canvas Output --- */
+        .canvas {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 600px;
+        }
+
+        /* The container we will screenshot */
+        .export-frame {
+            position: relative;
+            width: 450px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 40px;
+        }
+
+        .flower-vase {
+            position: absolute;
+            bottom: 180px;
+            width: 250px;
+            height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 10;
+        }
+
+        .item-sprite {
+            position: absolute;
+            bottom: -20px;
+            font-size: 5rem;
+            transform-origin: bottom center;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(2px 5px 5px rgba(0,0,0,0.15));
+            animation: popIn 0.5s forwards;
+        }
+        
+        .item-sprite.main-lily {
+            font-size: 7rem;
+            filter: drop-shadow(4px 8px 8px rgba(0,0,0,0.2));
+            z-index: 5 !important;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0) translateY(50px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* 3D Wrapper Design */
+        .wrapper-back {
+            position: absolute;
+            bottom: 30px;
+            width: 0;
+            height: 0;
+            border-left: 110px solid transparent;
+            border-right: 110px solid transparent;
+            border-top: 220px solid #e0c8c5; /* Darker interior */
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .wrapper-front {
+            position: absolute;
+            bottom: 20px;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 250px solid #ffe4e1;
+            border-radius: 15px;
+            z-index: 20;
+            filter: drop-shadow(0 15px 25px rgba(100, 50, 60, 0.15));
+            transition: border-top-color 0.4s;
+        }
+
+        /* Frilly Lace Edge */
+        .wrapper-front::after {
+            content: '';
+            position: absolute;
+            top: -260px;
+            left: -140px;
+            width: 280px;
+            height: 20px;
+            background-image: radial-gradient(circle at 10px 0, transparent 10px, #ffffff 11px);
+            background-size: 20px 20px;
+            background-repeat: repeat-x;
+            z-index: 21;
+        }
+
+        .bow {
+            position: absolute;
+            top: -230px;
+            left: -35px;
+            font-size: 4rem;
+            z-index: 22;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .gift-tag {
+            position: absolute;
+            top: -140px;
+            left: 50px;
+            background: #fffdfd;
+            padding: 20px;
+            width: 150px;
+            min-height: 80px;
+            border-radius: 4px 4px 4px 20px;
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.1);
+            transform: rotate(8deg);
+            border: 2px solid #f9e4e8;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gift-tag p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #5c3a41;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        /* Hide controls when viewing a shared link */
+        .view-mode .controls { display: none; }
+        .view-mode .receiver-greeting { display: block; }
+    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <h1>The Lily Garden</h1>
-            <ul>
-                <li><a href="#">Varieties</a></li>
-                <li><a href="#">Care Guide</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="hero">
-            <h2>Elegance in every petal.</h2>
-            <p>Discover the beauty, history, and fragrance of the world's most captivating flower.</p>
-            <button>Explore the Collection</button>
-        </section>
-    </main>
-    <section class="interactive-bloom">
-    <p>Tap the envelope for a surprise</p>
-    
-    <!-- The onclick toggles the 'open' class -->
-    <div class="envelope-wrapper" onclick="this.classList.toggle('open')">
-        <div class="envelope">
-            <div class="flap"></div>
-            <div class="pocket"></div>
-            <div class="flower">
-                <!-- Scalable Vector Graphic (SVG) of a Lily -->
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Stem and Leaves -->
-                    <path d="M100 200 Q95 150 100 100" stroke="#4a7c59" stroke-width="6" fill="none"/>
-                    <path d="M100 150 Q70 140 80 120 Q100 130 100 150" fill="#4a7c59"/>
-                    <path d="M100 140 Q130 130 120 110 Q100 120 100 140" fill="#4a7c59"/>
-                    <!-- Pink Petals -->
-                    <path d="M100 100 Q50 100 40 50 Q80 70 100 100" fill="#f8b4c4"/>
-                    <path d="M100 100 Q150 100 160 50 Q120 70 100 100" fill="#f8b4c4"/>
-                    <path d="M100 100 Q70 30 100 10 Q130 30 100 100" fill="#e86a92"/>
-                    <path d="M100 100 Q40 60 60 20 Q90 60 100 100" fill="#f39bb4"/>
-                    <path d="M100 100 Q160 60 140 20 Q110 60 100 100" fill="#f39bb4"/>
-                </svg>
-            </div>
+    <div class="app-container" id="app">
+        
+        <!-- Receiver Greeting (Hidden by default) -->
+        <div class="receiver-greeting">
+            <h1>Someone sent you a bloom box... 🎀</h1>
         </div>
+
+        <!-- UI Control Panel -->
+        <aside class="controls" id="controlPanel">
+            <div>
+                <h2>Build a Box 🎀</h2>
+                <p style="margin-top: 5px; color: #8c6b73;">Design a custom arrangement and send it to someone special.</p>
+            </div>
+            
+            <div class="control-group">
+                <label>Add the Main Event</label>
+                <button onclick="addItem('lily', true)" class="btn-primary">🌸 Add Pink Lily</button>
+                <button onclick="addItem('whitelily', true)" class="btn-primary" style="margin-top: 10px; background: linear-gradient(135deg, #f8f8f8, #e0e0e0); color: #5c3a41;">⚜️ Add White Lily</button>
+            </div>
+
+            <div class="control-group">
+                <label>Add Other Accents</label>
+                <div class="btn-grid">
+                    <button onclick="addItem('rose')">🌹 Rose</button>
+                    <button onclick="addItem('tulip')">🌷 Tulip</button>
+                    <button onclick="addItem('cat')">🐱 Kitten</button>
+                    <button onclick="addItem('dog')">🐶 Puppy</button>
+                    <button onclick="addItem('sparkle')">✨ Sparkles</button>
+                    <button onclick="addItem('ribbon')">🎀 Ribbon</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="wrapColor">Wrapping Paper Color:</label>
+                <input type="color" id="wrapColor" value="#ffe4e1">
+            </div>
+
+            <div class="control-group">
+                <label for="giftMessage">Secret Message:</label>
+                <textarea id="giftMessage" placeholder="You are the sweetest..." maxlength="45"></textarea>
+            </div>
+            
+            <div class="action-btns">
+                <button onclick="generateShareLink()">💌 Copy Link to Share</button>
+                <button onclick="downloadImage()">📸 Save Image</button>
+            </div>
+            <button onclick="clearBouquet()" style="width:100%; margin-top: 10px; background: transparent; border: none; text-decoration: underline;">Start Over</button>
+        </aside>
+
+        <!-- Visual Output -->
+        <main class="canvas">
+            <div class="export-frame" id="exportFrame">
+                <div class="wrapper-back"></div>
+                
+                <div id="flowerVase" class="flower-vase">
+                    <!-- Items injected via JS -->
+                </div>
+                
+                <div id="wrapperFront" class="wrapper-front">
+                    <div class="bow">🎀</div>
+                    <div class="gift-tag">
+                        <p id="tagText">For you...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-</section>
+
+    <script>
+        const vase = document.getElementById('flowerVase');
+        const wrapColorInput = document.getElementById('wrapColor');
+        const wrapperFront = document.getElementById('wrapperFront');
+        const messageInput = document.getElementById('giftMessage');
+        const tagText = document.getElementById('tagText');
+        const app = document.getElementById('app');
+
+        // State Management
+        let bouquetData = [];
+
+        const emojiMap = {
+            lily: '🌸', whitelily: '⚜️', rose: '🌹', 
+            tulip: '🌷', cat: '🐱', dog: '🐶', 
+            sparkle: '✨', ribbon: '🎀'
+        };
+
+        function addItem(type, isMain = false) {
+            bouquetData.push({ type, isMain });
+            renderItem(type, isMain);
+        }
+
+        function renderItem(type, isMain) {
+            const item = document.createElement('div');
+            item.className = 'item-sprite';
+            if(isMain) item.classList.add('main-lily');
+            
+            item.textContent = emojiMap[type];
+            
+            // Calculate 3D positioning
+            const range = isMain ? 20 : 60;
+            const randomX = Math.floor(Math.random() * range * 2) - range;
+            const randomY = Math.floor(Math.random() * 40) - (isMain ? 20 : 0);
+            const randomRot = Math.floor(Math.random() * 30) - 15;
+            
+            item.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRot}deg)`;
+            item.style.zIndex = Math.floor(Math.random() * 10);
+            
+            vase.appendChild(item);
+        }
+
+        // Live UI Updates
+        wrapColorInput.addEventListener('input', (e) => {
+            wrapperFront.style.borderTopColor = e.target.value;
+        });
+
+        messageInput.addEventListener('input', (e) => {
+            tagText.textContent = e.target.value || 'For you...';
+        });
+
+        function clearBouquet() {
+            vase.innerHTML = '';
+            bouquetData = [];
+            messageInput.value = '';
+            tagText.textContent = 'For you...';
+            wrapColorInput.value = '#ffe4e1';
+            wrapperFront.style.borderTopColor = '#ffe4e1';
+        }
+
+        // --- Sharing & Downloading Features --- //
+
+        function generateShareLink() {
+            // Encode the state into a URL parameter
+            const payload = {
+                items: bouquetData,
+                color: wrapColorInput.value,
+                msg: messageInput.value
+            };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?gift=${encoded}`;
+            
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert("💌 Link copied! Send it to someone special.");
+            });
+        }
+
+        function downloadImage() {
+            const frame = document.getElementById('exportFrame');
+            // Use html2canvas to take a snapshot of the DOM
+            html2canvas(frame, { backgroundColor: null, scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'coquette-bloom-box.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // --- Receiver Mode Initialization --- //
+        
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('gift')) {
+                // If a URL parameter exists, switch to view mode and build the bouquet
+                app.classList.add('view-mode');
+                
+                try {
+                    const decoded = JSON.parse(decodeURIComponent(atob(params.get('gift'))));
+                    
+                    // Apply saved state
+                    wrapperFront.style.borderTopColor = decoded.color;
+                    tagText.textContent = decoded.msg || 'For you...';
+                    
+                    // Stagger the animation of items falling into the box
+                    decoded.items.forEach((item, index) => {
+                        setTimeout(() => {
+                            renderItem(item.type, item.isMain);
+                        }, index * 200);
+                    });
+                } catch(e) {
+                    console.error("Invalid gift link");
+                }
+            }
+        };
+    </script>
 </body>
 </html>
