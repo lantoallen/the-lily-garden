@@ -23,5 +23,31 @@
             <button>Explore the Collection</button>
         </section>
     </main>
+    <section class="interactive-bloom">
+    <p>Tap the envelope for a surprise</p>
+    
+    <!-- The onclick toggles the 'open' class -->
+    <div class="envelope-wrapper" onclick="this.classList.toggle('open')">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="pocket"></div>
+            <div class="flower">
+                <!-- Scalable Vector Graphic (SVG) of a Lily -->
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Stem and Leaves -->
+                    <path d="M100 200 Q95 150 100 100" stroke="#4a7c59" stroke-width="6" fill="none"/>
+                    <path d="M100 150 Q70 140 80 120 Q100 130 100 150" fill="#4a7c59"/>
+                    <path d="M100 140 Q130 130 120 110 Q100 120 100 140" fill="#4a7c59"/>
+                    <!-- Pink Petals -->
+                    <path d="M100 100 Q50 100 40 50 Q80 70 100 100" fill="#f8b4c4"/>
+                    <path d="M100 100 Q150 100 160 50 Q120 70 100 100" fill="#f8b4c4"/>
+                    <path d="M100 100 Q70 30 100 10 Q130 30 100 100" fill="#e86a92"/>
+                    <path d="M100 100 Q40 60 60 20 Q90 60 100 100" fill="#f39bb4"/>
+                    <path d="M100 100 Q160 60 140 20 Q110 60 100 100" fill="#f39bb4"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>
