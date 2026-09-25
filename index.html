@@ -3,41 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coquette Bloom Box</title>
+    <title>Realistic Coquette Bloom Box</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Light Theme (Daylight Coquette) */
-            --bg-main: #fdf5f6;
-            --bg-pattern: #f7dcd9;
-            --panel-bg: rgba(255, 255, 255, 0.95);
-            --text-main: #5c3a41;
-            --text-muted: #8c6b73;
+            --bg-main: #fdf7f8;
+            --bg-pattern: #f5e4e8;
+            --panel-bg: rgba(255, 255, 255, 0.45);
+            --panel-border: rgba(255, 255, 255, 0.6);
+            --text-main: #4a333a;
+            --text-muted: #8c737a;
             --accent-pink: #d16b8a;
-            --accent-light: #ffb6c1;
-            --border-lace: #fce4ec;
-            --shadow-color: rgba(230, 180, 190, 0.3);
-            --lace-glow: none;
-            --pearl-color: #fff;
-            --pearl-shadow: rgba(0,0,0,0.1);
+            --btn-bg: rgba(255, 255, 255, 0.7);
+            --btn-hover: #ffffff;
+            --glass-shadow: 0 8px 32px 0 rgba(230, 190, 200, 0.3);
+            --env-darken: rgba(0,0,0,0.05);
         }
 
-        [data-theme="dark"] {
-            /* Dark Theme (Midnight Coquette) */
-            --bg-main: #140d1a;
-            --bg-pattern: #2a1b38;
-            --panel-bg: rgba(30, 20, 40, 0.95);
-            --text-main: #f0e6f5;
-            --text-muted: #bda6c9;
-            --accent-pink: #b388eb;
-            --accent-light: #8e62c9;
-            --border-lace: #452b59;
-            --shadow-color: rgba(179, 136, 235, 0.15);
-            --lace-glow: 0 0 12px rgba(179, 136, 235, 0.4);
-            --pearl-color: #2a1b38;
-            --pearl-shadow: rgba(179, 136, 235, 0.5);
+        body.dark-mode {
+            --bg-main: #1c1520;
+            --bg-pattern: #2b1f30;
+            --panel-bg: rgba(40, 25, 45, 0.45);
+            --panel-border: rgba(255, 255, 255, 0.1);
+            --text-main: #fce4ec;
+            --text-muted: #bfa8b0;
+            --accent-pink: #e58cb0;
+            --btn-bg: rgba(60, 40, 65, 0.7);
+            --btn-hover: rgba(80, 55, 85, 0.9);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --env-darken: rgba(0,0,0,0.3);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,779 +41,673 @@
         body {
             background-color: var(--bg-main);
             background-image: radial-gradient(var(--bg-pattern) 2px, transparent 2px);
-            background-size: 30px 30px;
+            background-size: 35px 35px;
             font-family: 'Quicksand', sans-serif;
             color: var(--text-main);
             overflow-x: hidden;
-            transition: background-color 0.5s, color 0.5s;
+            transition: background 0.6s ease, color 0.6s ease;
+            min-height: 100vh;
         }
 
         .app-container {
             display: flex;
             flex-wrap: wrap;
             min-height: 100vh;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
-        /* Top Bar */
-        .top-bar {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
-        .theme-toggle {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-lace);
-            color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            box-shadow: 0 4px 10px var(--shadow-color);
-            transition: all 0.3s ease;
-        }
-
         .controls {
-            width: 100%;
-            max-width: 420px;
-            background: var(--panel-bg);
+            width: 100%; 
+            max-width: 420px; 
             padding: 2.5rem;
-            border-right: 2px dashed var(--border-lace);
-            box-shadow: 10px 0 30px var(--shadow-color);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--panel-border);
+            box-shadow: var(--glass-shadow);
+            z-index: 40; 
+            height: 100vh; 
             overflow-y: auto;
-            max-height: 100vh;
-            backdrop-filter: blur(5px);
-            transition: all 0.5s;
+            transition: all 0.5s ease;
         }
 
-        .controls h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            font-style: italic;
-            color: var(--accent-pink);
-            transition: color 0.5s;
+        .controls h2 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 2.5rem; 
+            font-style: italic; 
+            color: var(--accent-pink); 
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .control-group {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1.2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-lace);
+        .control-group { 
+            background: rgba(255, 255, 255, 0.2); 
+            padding: 1.2rem; 
+            border-radius: 16px; 
+            border: 1px solid var(--panel-border); 
+            margin-top: 1.2rem; 
+            box-shadow: inset 0 2px 10px rgba(255,255,255,0.3);
+        }
+        
+        body.dark-mode .control-group {
+            background: rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        .control-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Grid & Buttons */
-        .btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        button.tool-btn {
-            padding: 12px;
-            border: 1px solid var(--border-lace);
-            border-radius: 20px;
-            background: transparent;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            color: var(--text-main);
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.2);
-        }
-
-        button.tool-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 6px 12px var(--shadow-color);
-            border-color: var(--accent-pink);
-        }
-
-        .btn-primary {
-            background: var(--accent-light);
-            color: #fff;
-            border: none;
-            grid-column: span 2;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 10px var(--shadow-color);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-pink);
-        }
-
-        input[type="color"] {
-            width: 100%;
-            height: 45px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: transparent;
-        }
-
-        textarea {
-            width: 100%;
-            height: 70px;
-            padding: 12px;
-            border: 1px solid var(--border-lace);
-            border-radius: 8px;
-            font-family: inherit;
-            resize: none;
-            background: rgba(255,255,255,0.1);
+        .control-group label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 0.8rem; 
+            font-size: 0.95rem; 
             color: var(--text-main);
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent-pink);
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        button { 
+            padding: 12px; 
+            border: 1px solid var(--panel-border); 
+            border-radius: 20px; 
+            background: var(--btn-bg); 
+            cursor: pointer; 
+            color: var(--accent-pink); 
+            font-weight: 600; 
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
         }
+        
+        button:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08); 
+            background: var(--btn-hover);
+        }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, #f29cb5, #ffb0bc); 
+            color: white; 
+            border: none; 
+            grid-column: span 2; 
+            box-shadow: 0 4px 15px rgba(242, 156, 181, 0.4); 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary:hover { background: linear-gradient(135deg, #f7a6be, #ffb8c3); }
+        
+        .action-btns { display: flex; gap: 12px; margin-top: 1.5rem; }
+        .action-btns button { flex: 1; background: var(--accent-pink); color: white; border: none; box-shadow: 0 5px 15px rgba(209, 107, 138, 0.3); }
 
-        /* Capacity Pearls */
-        .capacity-container {
-            margin-top: 5px;
+        .color-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+        input[type="color"] { 
+            width: 45px; height: 45px; border: none; border-radius: 12px; 
+            cursor: pointer; padding: 0; background: none; 
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
         }
-        .pearl-string {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-            flex-wrap: wrap;
+        
+        select, textarea { 
+            width: 100%; padding: 12px; border: 1px solid var(--panel-border); 
+            border-radius: 12px; font-family: inherit; 
+            background: var(--btn-bg); color: var(--text-main);
+            transition: all 0.3s; 
         }
-        .pearl {
-            width: 12px;
-            height: 12px;
-            background: var(--pearl-color);
-            border-radius: 50%;
-            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.1), 0 2px 4px var(--pearl-shadow);
-            opacity: 0.3;
-            transition: opacity 0.3s, transform 0.3s;
-        }
-        .pearl.filled {
-            opacity: 1;
-            background: var(--accent-pink);
-            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), 0 0 8px var(--accent-pink);
-        }
-        .shake {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-        }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
-            40%, 60% { transform: translate3d(3px, 0, 0); }
-        }
+        textarea { resize: none; height: 80px; }
+        textarea:focus, select:focus { outline: none; border-color: var(--accent-pink); box-shadow: 0 0 0 3px rgba(209, 107, 138, 0.2); }
 
-        .canvas-area {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            min-height: 100vh;
-            padding: 2rem;
+        .canvas { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+
+        .floating-btn {
+            position: absolute; top: 25px; right: 25px; z-index: 50;
+            padding: 12px 24px; background: var(--panel-bg);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--glass-shadow); 
+            color: var(--text-main);
         }
 
         .export-frame {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding-bottom: 60px;
+            position: relative; width: 550px; height: 750px; display: flex;
+            align-items: flex-end; justify-content: center; padding-bottom: 60px;
         }
 
-        .flower-vase {
-            position: absolute;
-            bottom: 200px;
-            width: 300px;
-            height: 350px;
+        .envelope-container { 
+            position: absolute; bottom: 60px; width: 400px; height: 280px; 
+            cursor: pointer; z-index: 20; 
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.15)); 
+        }
+        
+        .env-back { 
+            position: absolute; width: 100%; height: 100%; 
+            background: #ebd9dc; border-radius: 12px; z-index: 1; 
+            box-shadow: inset 0 0 60px var(--env-darken); 
+            transition: background 0.4s;
+        }
+
+        .env-front {
+            position: absolute; bottom: 0; left: 0; width: 0; height: 0;
+            border-left: 200px solid #f4e3e6; border-right: 200px solid #f4e3e6;
+            border-bottom: 170px solid #fcf0f2; border-top: 110px solid transparent;
+            border-radius: 0 0 12px 12px; z-index: 25; 
+            filter: drop-shadow(0 -5px 15px rgba(0,0,0,0.06));
+            transition: border-color 0.4s;
+        }
+
+        .env-flap {
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-left: 200px solid transparent; border-right: 200px solid transparent; 
+            border-top: 170px solid #e0ccd0;
+            transform-origin: top; transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1); z-index: 30;
+            filter: drop-shadow(0 12px 15px rgba(0,0,0,0.15));
+        }
+
+        .bouquet-system {
+            position: absolute; bottom: 40px; width: 100%; height: 450px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            transform: translateY(140px) scale(0.5); opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.15) 0.4s, opacity 0.6s 0.3s; 
             z-index: 10;
         }
 
-        /* 3D Wrapping Paper */
+        .envelope-container.open .env-flap { transform: rotateX(180deg); z-index: 5; filter: none; }
+        .envelope-container.open .bouquet-system { transform: translateY(-70px) scale(1); opacity: 1; z-index: 20; }
+        .envelope-container.open .env-front { z-index: 25; } 
+
         .wrapper-back {
-            position: absolute;
-            bottom: 40px;
-            width: 0;
-            height: 0;
-            border-left: 130px solid transparent;
-            border-right: 130px solid transparent;
-            border-top: 260px solid rgba(0,0,0,0.1);
-            border-radius: 10px;
-            z-index: 1;
-            filter: drop-shadow(0 -5px 10px rgba(0,0,0,0.05));
+            position: absolute; bottom: 0; width: 0; height: 0;
+            border-left: 140px solid transparent; border-right: 140px solid transparent; border-top: 280px solid #e0c8c5;
         }
-
+        
         .wrapper-front {
-            position: absolute;
-            bottom: 20px;
-            width: 0;
-            height: 0;
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
-            border-top: 300px solid #ffe4e1;
-            border-radius: 15px;
-            z-index: 20;
-            filter: drop-shadow(0 20px 30px var(--shadow-color));
-            transition: border-top-color 0.4s;
-            pointer-events: none; /* Let clicks pass to vase if needed */
+            position: absolute; bottom: -10px; width: 0; height: 0;
+            border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 300px solid #ffe4e1;
+            filter: drop-shadow(0 20px 25px rgba(0,0,0,0.25)); z-index: 15; transition: border-top-color 0.4s;
         }
 
-        .wrapper-front::after {
-            content: '';
-            position: absolute;
-            top: -310px;
-            left: -160px;
-            width: 320px;
-            height: 25px;
-            background-image: radial-gradient(circle at 12px 0, transparent 12px, var(--bg-main) 13px);
-            background-size: 24px 24px;
-            background-repeat: repeat-x;
-            z-index: 21;
-            filter: drop-shadow(var(--lace-glow));
-            transition: background-image 0.5s;
+        .wrapper-front.pattern-lace::after {
+            content: ''; position: absolute; top: -310px; left: -160px; width: 320px; height: 40px;
+            background-image: radial-gradient(circle at 20px 0, transparent 20px, rgba(255,255,255,0.9) 21px);
+            background-size: 40px 40px; background-repeat: repeat-x; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.15));
+        }
+        
+        .wrapper-front.pattern-dots::before {
+            content: ''; position: absolute; top: -300px; left: -160px; width: 320px; height: 300px;
+            background-image: radial-gradient(rgba(255,255,255,0.7) 4px, transparent 4px); background-size: 30px 30px;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
         }
 
-        .bow {
-            position: absolute;
-            top: -260px;
-            left: -45px;
-            font-size: 5rem;
-            z-index: 22;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-            pointer-events: auto;
+        .flower-vase { 
+            position: absolute; bottom: 200px; width: 300px; height: 400px; 
+            display: flex; justify-content: center; align-items: flex-end; z-index: 12; 
         }
-
-        .draggable-item {
-            position: absolute;
-            font-size: 5rem;
-            cursor: grab;
-            user-select: none;
-            touch-action: none; /* Crucial for mobile dragging */
-            filter: drop-shadow(2px 5px 8px rgba(0,0,0,0.15));
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
-            /* Center transform origin for rotation */
-            transform-origin: center center;
-            z-index: 15;
-            will-change: transform;
+        
+        .item-sprite { 
+            position: absolute; font-size: 5rem; cursor: grab; 
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.3)); 
+            transition: transform 0.1s; 
+            display: flex; align-items: center; justify-content: center;
         }
-
-        .draggable-item:active {
-            cursor: grabbing;
-        }
-
-        .draggable-item.main-event {
-            font-size: 7.5rem;
-            filter: drop-shadow(4px 10px 12px rgba(0,0,0,0.2));
-            z-index: 12; /* slightly behind smaller accents */
-        }
-
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0) translateY(30px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
+        
+        .item-sprite svg { width: 100%; height: 100%; pointer-events: none; }
+        .item-sprite:active { cursor: grabbing; filter: drop-shadow(0 25px 30px rgba(0,0,0,0.4)); }
+        
+        /* Size modifiers */
+        .sprite-lily { width: 140px; height: 140px; z-index: 5 !important;}
+        .sprite-rose { width: 90px; height: 90px; z-index: 4;}
+        .sprite-cat { width: 120px; height: 120px; z-index: 6;}
+        .sprite-ribbon { width: 100px; height: 100px; z-index: 7;}
+        .sprite-pearls { width: 160px; height: 160px; z-index: 3;}
 
         .gift-tag {
-            position: absolute;
-            top: -160px;
-            left: 60px;
-            background: var(--panel-bg);
-            padding: 20px;
-            width: 160px;
-            min-height: 90px;
-            border-radius: 4px 4px 4px 20px;
-            box-shadow: 2px 5px 20px var(--shadow-color);
-            transform: rotate(8deg);
-            border: 2px solid var(--border-lace);
-            z-index: 25;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: auto;
+            position: absolute; top: -160px; left: 60px; 
+            background: linear-gradient(135deg, #ffffff, #fafafa); 
+            padding: 25px 20px; width: 160px;
+            border-radius: 4px 4px 4px 20px; 
+            box-shadow: 8px 15px 25px rgba(0,0,0,0.18); 
+            transform: rotate(6deg); z-index: 18;
+            border: 1px solid rgba(0,0,0,0.06);
         }
-
-        .gift-tag p {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.2rem;
-            color: var(--text-main);
-            text-align: center;
-            word-wrap: break-word;
+        
+        .gift-tag::before {
+            content: ''; position: absolute; top: 15px; left: -8px; width: 14px; height: 14px;
+            background: #fdf5f6; border-radius: 50%; box-shadow: inset 1px 1px 4px rgba(0,0,0,0.25);
         }
-
-        /* Receiver Overlay */
-        .receiver-overlay {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
-            z-index: 50;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            opacity: 1;
-            transition: opacity 0.8s;
-        }
-
-        .receiver-overlay h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-
-        .untie-btn {
-            background: #fff;
-            color: var(--accent-pink);
-            font-size: 1.5rem;
-            padding: 15px 40px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            transition: transform 0.3s;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-        }
+        
+        .gift-tag p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; text-align: center; color: #4a333a; }
 
         .view-mode .controls { display: none; }
-        .view-mode .top-bar { display: none; }
+        .hint-text { 
+            position: absolute; top: -60px; width: 100%; text-align: center; 
+            font-weight: 600; font-size: 1.1rem; color: var(--accent-pink); 
+            animation: pulse 2s infinite; text-shadow: 0 2px 8px rgba(255,255,255,0.9); 
+        }
+        
+        @keyframes pulse { 
+            0%, 100% { opacity: 0.6; transform: scale(1); } 
+            50% { opacity: 1; transform: scale(1.05); } 
+        }
+
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <button class="theme-toggle" onclick="toggleTheme()">🌙 Midnight Mode</button>
-    </div>
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_2d8375fb3e.mp3?filename=soft-piano-126040.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="app-container" id="app">
-        
-        <!-- SENDER UI: Control Panel -->
         <aside class="controls" id="controlPanel">
-            <div>
-                <h2>Build a Bouquet 🎀</h2>
-                <p style="margin-top: 5px; color: var(--text-muted);">Drag and drop items to arrange them perfectly.</p>
-            </div>
+            <h2>Build a Box 🎀</h2>
             
             <div class="control-group">
-                <label>Main Event</label>
-                <div class="btn-grid">
-                    <button class="tool-btn btn-primary" onclick="addItem('🌸', true)">🌸 Pink Lily</button>
-                    <button class="tool-btn btn-primary" onclick="addItem('⚜️', true)" style="background: rgba(255,255,255,0.5); color: var(--text-main);">⚜️ White Lily</button>
+                <label>Theme & Atmosphere</label>
+                <div class="color-row">
+                    <input type="color" id="envColor" value="#f5e4e6"> <span>Envelope Color</span>
+                </div>
+                <div class="btn-grid" style="margin-top: 10px;">
+                    <button onclick="document.body.classList.toggle('dark-mode')">🌙 Dark Mode</button>
+                    <button id="musicBtn" onclick="toggleMusic()">🎵 Play Music</button>
                 </div>
             </div>
 
             <div class="control-group">
-                <label>Coquette Accents</label>
-                <div class="btn-grid">
-                    <button class="tool-btn" onclick="addItem('🌹')">🌹 Rose</button>
-                    <button class="tool-btn" onclick="addItem('🌷')">🌷 Tulip</button>
-                    <button class="tool-btn" onclick="addItem('🐱')">🐱 Kitten</button>
-                    <button class="tool-btn" onclick="addItem('🐶')">🐶 Puppy</button>
-                    <button class="tool-btn" onclick="addItem('✨')">✨ Sparkles</button>
-                    <button class="tool-btn" onclick="addItem('🎀')">🎀 Ribbon</button>
+                <label>Bouquet Wrapper</label>
+                <div class="color-row">
+                    <input type="color" id="wrapColor" value="#ffe4e1"> <span>Paper Color</span>
                 </div>
-            </div>
-
-            <div class="control-group capacity-container">
-                <label id="capacityLabel">Box Fullness: 0/15</label>
-                <div class="pearl-string" id="pearlString">
-                    <!-- Pearls generated by JS -->
-                </div>
+                <select id="wrapPattern">
+                    <option value="none">Smooth Paper</option>
+                    <option value="pattern-lace">Lace Trim</option>
+                    <option value="pattern-dots">Polka Dots</option>
+                </select>
             </div>
 
             <div class="control-group">
-                <label for="wrapColor">Wrapping Paper Color:</label>
-                <input type="color" id="wrapColor" value="#ffe4e1" onchange="updateWrapperColor(); playCrinkle()">
+                <label>Add Elements (Drag to arrange!)</label>
+                <button onclick="addItem('lily')" class="btn-primary">🌸 Add Pink Lily</button>
+                <button onclick="addItem('whitelily')" class="btn-primary" style="margin-top:8px; background: linear-gradient(135deg, #ffffff, #f0f0f0); color: #4a333a; text-shadow: none;">⚜️ Add White Lily</button>
+                
+                <div class="btn-grid" style="margin-top: 12px;">
+                    <button onclick="addItem('rose')">🌹 Rose</button>
+                    <button onclick="addItem('cat')">🐱 Kitten</button>
+                    <button onclick="addItem('ribbon')">🎀 Ribbon</button>
+                    <button onclick="addItem('pearls')">🦪 Pearls</button>
+                </div>
+                <p id="capacity" style="font-size: 0.85rem; text-align: center; margin-top: 12px; color: var(--text-muted);">Items: 0/15</p>
             </div>
 
             <div class="control-group">
-                <label for="giftMessage">Secret Message:</label>
-                <textarea id="giftMessage" placeholder="You are the sweetest..." maxlength="45"></textarea>
+                <label>Secret Message:</label>
+                <textarea id="giftMessage" placeholder="You are the sweetest..." maxlength="50"></textarea>
             </div>
             
-            <div class="btn-grid" style="margin-top: 10px;">
-                <button class="tool-btn" style="background: var(--text-main); color: var(--bg-main);" onclick="generateShareLink()">💌 Copy Link</button>
-                <button class="tool-btn" style="background: var(--text-main); color: var(--bg-main);" onclick="downloadImage()">📸 Save Image</button>
+            <div class="action-btns">
+                <button onclick="generateShareLink()">💌 Copy Link</button>
+                <button onclick="document.getElementById('envelope').classList.toggle('open'); playPop();">👀 Test Open</button>
             </div>
-            <button class="tool-btn" onclick="clearBouquet()" style="border: none; text-decoration: underline; background: transparent;">Start Over</button>
         </aside>
 
-        <!-- VISUAL OUTPUT: The Canvas -->
-        <main class="canvas-area">
+        <main class="canvas">
+            <button id="receiverMusicBtn" class="floating-btn" onclick="toggleMusic()" style="display: none;">🎵 Play Music</button>
             
-            <!-- Receiver Unboxing Overlay -->
-            <div class="receiver-overlay" id="receiverOverlay">
-                <h1>A gift has arrived for you... 🎀</h1>
-                <button class="untie-btn" onclick="untieBox()">Tap to Untie</button>
-            </div>
-
             <div class="export-frame" id="exportFrame">
-                <div class="wrapper-back" id="wrapperBack"></div>
-                
-                <!-- Droppable Area -->
-                <div id="flowerVase" class="flower-vase">
-                    <!-- Items injected and dragged here -->
-                </div>
-                
-                <div id="wrapperFront" class="wrapper-front">
-                    <div class="bow">🎀</div>
-                    <div class="gift-tag">
-                        <p id="tagText">For you...</p>
+                <div class="envelope-container" id="envelope">
+                    <p class="hint-text" id="hintText" style="display:none;">Tap to open your gift 💌</p>
+                    <div class="env-back" id="envBack"></div>
+                    <div class="env-flap" id="envFlap"></div>
+                    
+                    <div class="bouquet-system">
+                        <div class="wrapper-back"></div>
+                        <div id="flowerVase" class="flower-vase"></div>
+                        <div id="wrapperFront" class="wrapper-front">
+                            <div class="gift-tag"><p id="tagText">For you...</p></div>
+                        </div>
                     </div>
+                    
+                    <div class="env-front" id="envFront"></div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
+        let bouquetData = [];
+        const MAX_ITEMS = 15;
         const vase = document.getElementById('flowerVase');
         const wrapColorInput = document.getElementById('wrapColor');
+        const wrapPatternSelect = document.getElementById('wrapPattern');
+        const envColorInput = document.getElementById('envColor');
         const wrapperFront = document.getElementById('wrapperFront');
-        const wrapperBack = document.getElementById('wrapperBack');
         const messageInput = document.getElementById('giftMessage');
         const tagText = document.getElementById('tagText');
-        const app = document.getElementById('app');
-        const pearlString = document.getElementById('pearlString');
-        const capacityLabel = document.getElementById('capacityLabel');
-        const receiverOverlay = document.getElementById('receiverOverlay');
+        const envelope = document.getElementById('envelope');
+        const bgMusic = document.getElementById('bgMusic');
 
-        const MAX_ITEMS = 15;
-        let itemsData = []; // Array to store { id, emoji, isMain, x, y, rot }
-        let itemCount = 0;
-        let isDarkMode = false;
+        const assetMap = { 
+            lily: `<svg viewBox="0 0 120 120" overflow="visible">
+                <defs>
+                    <radialGradient id="pinkG" cx="50%" cy="60%" r="60%">
+                        <stop offset="0%" stop-color="#b71c1c"/>
+                        <stop offset="30%" stop-color="#f06292"/>
+                        <stop offset="70%" stop-color="#f8bbd0"/>
+                        <stop offset="100%" stop-color="#fff0f5"/>
+                    </radialGradient>
+                    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="1" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
+                    </filter>
+                    <filter id="stemShadow"><feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.4"/></filter>
+                </defs>
+                <path d="M60 110 Q55 70 60 55" stroke="#689f38" stroke-width="6" fill="none" stroke-linecap="round" filter="url(#stemShadow)"/>
+                <path d="M60 90 Q30 80 40 50 Q60 70 60 90" fill="#7cb342" filter="url(#shadow)"/>
+                <path d="M60 85 Q90 75 80 45 Q60 65 60 85" fill="#558b2f" filter="url(#shadow)"/>
+                
+                <path d="M60 55 C 30 50, 10 20, 30 10 C 45 25, 55 45, 60 55" fill="url(#pinkG)" filter="url(#shadow)"/>
+                <path d="M60 55 C 90 50, 110 20, 90 10 C 75 25, 65 45, 60 55" fill="url(#pinkG)" filter="url(#shadow)"/>
+                <path d="M60 55 C 80 30, 60 -10, 40 30 C 50 45, 55 50, 60 55" fill="url(#pinkG)" filter="url(#shadow)"/>
+                <path d="M60 55 C 30 70, 5 85, 25 95 C 45 80, 55 65, 60 55" fill="url(#pinkG)" filter="url(#shadow)"/>
+                <path d="M60 55 C 90 70, 115 85, 95 95 C 75 80, 65 65, 60 55" fill="url(#pinkG)" filter="url(#shadow)"/>
+                <path d="M60 55 C 45 35, 60 5, 75 35 C 65 45, 65 50, 60 55" fill="url(#pinkG)" filter="url(#shadow)"/>
+                
+                <path d="M60 55 L50 25 M60 55 L60 20 M60 55 L70 25" stroke="#8d6e63" stroke-width="1.5" stroke-linecap="round"/>
+                <ellipse cx="50" cy="25" rx="3.5" ry="2" fill="#e65100" transform="rotate(-30 50 25)"/>
+                <ellipse cx="60" cy="20" rx="4" ry="2" fill="#e65100"/>
+                <ellipse cx="70" cy="25" rx="3.5" ry="2" fill="#e65100" transform="rotate(30 70 25)"/>
+            </svg>`,
+            whitelily: `<svg viewBox="0 0 120 120" overflow="visible">
+                <defs>
+                    <radialGradient id="whiteG" cx="50%" cy="60%" r="60%">
+                        <stop offset="0%" stop-color="#cddc39"/>
+                        <stop offset="30%" stop-color="#f1f8e9"/>
+                        <stop offset="70%" stop-color="#ffffff"/>
+                        <stop offset="100%" stop-color="#fafafa"/>
+                    </radialGradient>
+                    <filter id="shadowW" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="1" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.2"/>
+                    </filter>
+                </defs>
+                <path d="M60 110 Q55 70 60 55" stroke="#7cb342" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M60 55 C 30 50, 10 20, 30 10 C 45 25, 55 45, 60 55" fill="url(#whiteG)" filter="url(#shadowW)"/>
+                <path d="M60 55 C 90 50, 110 20, 90 10 C 75 25, 65 45, 60 55" fill="url(#whiteG)" filter="url(#shadowW)"/>
+                <path d="M60 55 C 80 30, 60 -10, 40 30 C 50 45, 55 50, 60 55" fill="url(#whiteG)" filter="url(#shadowW)"/>
+                <path d="M60 55 C 30 70, 5 85, 25 95 C 45 80, 55 65, 60 55" fill="url(#whiteG)" filter="url(#shadowW)"/>
+                <path d="M60 55 C 90 70, 115 85, 95 95 C 75 80, 65 65, 60 55" fill="url(#whiteG)" filter="url(#shadowW)"/>
+                
+                <path d="M60 55 L50 25 M60 55 L60 20 M60 55 L70 25" stroke="#a1887f" stroke-width="1.5"/>
+                <ellipse cx="50" cy="25" rx="3.5" ry="2" fill="#ffb300" transform="rotate(-30 50 25)"/>
+                <ellipse cx="60" cy="20" rx="4" ry="2" fill="#ffb300"/>
+                <ellipse cx="70" cy="25" rx="3.5" ry="2" fill="#ffb300" transform="rotate(30 70 25)"/>
+            </svg>`,
+            rose: `<svg viewBox="0 0 100 100" overflow="visible">
+                <defs>
+                    <radialGradient id="roseG" cx="30%" cy="30%" r="70%">
+                        <stop offset="0%" stop-color="#ff4b68"/>
+                        <stop offset="60%" stop-color="#d81b60"/>
+                        <stop offset="100%" stop-color="#880e4f"/>
+                    </radialGradient>
+                    <filter id="rShadow"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.4"/></filter>
+                </defs>
+                <path d="M50 95 Q45 60 50 50" stroke="#33691e" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <path d="M50 70 C 20 60, 5 35, 30 20 C 60 40, 50 60, 50 70" fill="url(#roseG)" filter="url(#rShadow)"/>
+                <path d="M50 70 C 80 60, 95 35, 70 20 C 40 40, 50 60, 50 70" fill="url(#roseG)" filter="url(#rShadow)"/>
+                <circle cx="50" cy="40" r="24" fill="url(#roseG)" filter="url(#rShadow)"/>
+                <path d="M50 60 C 25 50, 25 20, 50 20 C 75 20, 75 50, 50 60" fill="#c2185b" filter="url(#rShadow)"/>
+                <circle cx="50" cy="38" r="12" fill="#880e4f"/>
+                <path d="M45 45 C 35 35, 50 25, 60 35" stroke="#ff8a80" stroke-width="2" fill="none" opacity="0.6"/>
+            </svg>`,
+            cat: `<svg viewBox="0 0 100 100" overflow="visible">
+                <defs>
+                    <radialGradient id="fur" cx="50%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#ffffff"/>
+                        <stop offset="70%" stop-color="#faebd7"/>
+                        <stop offset="100%" stop-color="#e0cbb6"/>
+                    </radialGradient>
+                    <filter id="cShadow"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-opacity="0.25"/></filter>
+                </defs>
+                <g filter="url(#cShadow)">
+                    <circle cx="30" cy="85" r="12" fill="url(#fur)"/>
+                    <circle cx="70" cy="85" r="12" fill="url(#fur)"/>
+                    <path d="M25 88 L25 93 M30 89 L30 94 M35 88 L35 93" stroke="#d7ccc8" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M65 88 L65 93 M70 89 L70 94 M75 88 L75 93" stroke="#d7ccc8" stroke-width="1.5" stroke-linecap="round"/>
+                    
+                    <polygon points="15,45 25,5 50,30" fill="url(#fur)"/>
+                    <polygon points="85,45 75,5 50,30" fill="url(#fur)"/>
+                    <polygon points="22,40 28,15 45,35" fill="#f48fb1"/>
+                    <polygon points="78,40 72,15 55,35" fill="#f48fb1"/>
+                    
+                    <circle cx="50" cy="50" r="42" fill="url(#fur)"/>
+                    
+                    <circle cx="32" cy="45" r="7" fill="#3e2723"/>
+                    <circle cx="68" cy="45" r="7" fill="#3e2723"/>
+                    <circle cx="30" cy="42" r="2.5" fill="#ffffff"/>
+                    <circle cx="66" cy="42" r="2.5" fill="#ffffff"/>
+                    
+                    <polygon points="46,58 54,58 50,63" fill="#ec407a"/>
+                    <path d="M40 68 C 45 74, 50 63, 50 63 C 50 63, 55 74, 60 68" stroke="#8d6e63" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    
+                    <ellipse cx="20" cy="58" rx="8" ry="4" fill="#ffcdd2" opacity="0.8"/>
+                    <ellipse cx="80" cy="58" rx="8" ry="4" fill="#ffcdd2" opacity="0.8"/>
+                </g>
+            </svg>`,
+            ribbon: `<svg viewBox="0 0 100 100" overflow="visible">
+                <defs>
+                    <linearGradient id="silk" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ffb6c1"/>
+                        <stop offset="40%" stop-color="#f06292"/>
+                        <stop offset="100%" stop-color="#c2185b"/>
+                    </linearGradient>
+                    <filter id="ribShadow"><feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.3"/></filter>
+                </defs>
+                <g filter="url(#ribShadow)">
+                    <path d="M50 40 C 15 5, -15 35, 15 55 C 30 65, 50 60, 50 60" fill="url(#silk)"/>
+                    <path d="M50 40 C 85 5, 115 35, 85 55 C 70 65, 50 60, 50 60" fill="url(#silk)"/>
+                    <path d="M45 55 C 35 70, 20 95, 20 95 L40 95 L50 60" fill="url(#silk)"/>
+                    <path d="M55 55 C 65 70, 80 95, 80 95 L60 95 L50 60" fill="url(#silk)"/>
+                    <circle cx="50" cy="50" r="14" fill="#ad1457" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.3))"/>
+                    <path d="M45 45 C 50 40, 55 45, 50 50" fill="#ff8a80" opacity="0.5"/>
+                </g>
+            </svg>`,
+            pearls: `<svg viewBox="0 0 100 100" overflow="visible">
+                <defs>
+                    <radialGradient id="pearlShine" cx="35%" cy="30%" r="65%">
+                        <stop offset="0%" stop-color="#ffffff"/>
+                        <stop offset="60%" stop-color="#f5f5f5"/>
+                        <stop offset="100%" stop-color="#bcaaa4"/>
+                    </radialGradient>
+                    <filter id="pShadow"><feDropShadow dx="1" dy="3" stdDeviation="2" flood-opacity="0.25"/></filter>
+                </defs>
+                <g filter="url(#pShadow)">
+                    <path d="M10 40 Q50 90 90 40" stroke="#eeeeee" stroke-width="2" fill="none"/>
+                    <circle cx="10" cy="40" r="8" fill="url(#pearlShine)"/>
+                    <circle cx="28" cy="58" r="8" fill="url(#pearlShine)"/>
+                    <circle cx="50" cy="65" r="8" fill="url(#pearlShine)"/>
+                    <circle cx="72" cy="58" r="8" fill="url(#pearlShine)"/>
+                    <circle cx="90" cy="40" r="8" fill="url(#pearlShine)"/>
+                </g>
+            </svg>`
+        };
 
-        // Initialize pearls
-        for(let i=0; i<MAX_ITEMS; i++) {
-            const pearl = document.createElement('div');
-            pearl.className = 'pearl';
-            pearlString.appendChild(pearl);
+        let isMusicPlaying = false;
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                document.getElementById('musicBtn').textContent = "🎵 Play Music";
+                document.getElementById('receiverMusicBtn').textContent = "🎵 Play Music";
+            } else {
+                bgMusic.play();
+                isMusicPlaying = true;
+                document.getElementById('musicBtn').textContent = "⏸️ Pause Music";
+                document.getElementById('receiverMusicBtn').textContent = "⏸️ Pause Music";
+            }
         }
 
-        let audioCtx;
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playPop() {
-            if(!audioCtx) return;
+            if(audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            const gainNode = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.1);
         }
 
-        function playChime() {
-            if(!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.5);
-        }
-
-        function playCrinkle() {
-            if(!audioCtx) return;
-            const bufferSize = audioCtx.sampleRate * 0.1; // 100ms
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
-            }
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = buffer;
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'bandpass';
-            filter.frequency.value = 4000;
-            const gain = audioCtx.createGain();
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            noise.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-            noise.start();
-        }
-
-        function updateCapacityUI() {
-            capacityLabel.textContent = `Box Fullness: ${itemCount}/${MAX_ITEMS}`;
-            const pearls = document.querySelectorAll('.pearl');
-            pearls.forEach((p, index) => {
-                if (index < itemCount) p.classList.add('filled');
-                else p.classList.remove('filled');
-            });
-        }
-
-        function addItem(emoji, isMain = false) {
-            initAudio();
-            if (itemCount >= MAX_ITEMS) {
-                // Shake capacity indicator
-                const capContainer = document.querySelector('.capacity-container');
-                capContainer.classList.remove('shake');
-                void capContainer.offsetWidth; // trigger reflow
-                capContainer.classList.add('shake');
+        function addItem(type) {
+            if (bouquetData.length >= MAX_ITEMS) {
+                alert("The box is perfectly full! 🎀");
                 return;
             }
-
-            const id = 'item_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+            playPop();
             
-            // Default random position inside vase
-            const rangeX = isMain ? 40 : 100;
-            const x = Math.floor(Math.random() * rangeX * 2) - rangeX;
-            const y = Math.floor(Math.random() * 100) + 50; // default drop height
-            const rot = Math.floor(Math.random() * 40) - 20;
-
-            const data = { id, emoji, isMain, x, y, rot };
-            itemsData.push(data);
-            itemCount++;
-            updateCapacityUI();
+            // Spawn Higher
+            const isMain = type === 'lily' || type === 'whitelily';
+            const range = isMain ? 30 : 60;
+            const x = Math.floor(Math.random() * range * 2) - range;
+            const y = -(Math.floor(Math.random() * 50) + (isMain ? 60 : 120)); 
             
-            renderItemElement(data);
-            
-            if(emoji === '✨') playChime();
-            else playPop();
+            const itemObj = { id: Date.now(), type, isMain, x, y };
+            bouquetData.push(itemObj);
+            renderItem(itemObj, true);
+            document.getElementById('capacity').textContent = `Items: ${bouquetData.length}/${MAX_ITEMS}`;
         }
 
-        function renderItemElement(data) {
+        function renderItem(data, isNew = false) {
             const el = document.createElement('div');
-            el.className = 'draggable-item';
-            if (data.isMain) el.classList.add('main-event');
-            el.id = data.id;
-            el.textContent = data.emoji;
+            el.className = `item-sprite sprite-${data.type}`;
+            el.innerHTML = assetMap[data.type];
             
-            // Apply positioning logic
-            updateElementTransform(el, data.x, data.y, data.rot);
+            // Smart Z-Index
+            const baseZIndex = (data.type === 'ribbon' || data.type === 'pearls') ? 20 : (data.isMain ? 5 : '');
+            el.style.zIndex = baseZIndex;
+
+            // Pop Animation
+            if (isNew) {
+                el.style.transform = `translate(${data.x}px, ${data.y - 40}px) scale(0)`;
+                setTimeout(() => {
+                    el.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2)';
+                    el.style.transform = `translate(${data.x}px, ${data.y}px) scale(1)`;
+                    setTimeout(() => el.style.transition = 'none', 500); 
+                }, 10);
+            } else {
+                el.style.transform = `translate(${data.x}px, ${data.y}px)`;
+            }
+            
+            // Unified Mouse and Touch Dragging Logic
+            let isDragging = false, startX, startY, initialX, initialY;
+
+            function startDrag(clientX, clientY) {
+                isDragging = true;
+                startX = clientX; 
+                startY = clientY;
+                initialX = data.x; 
+                initialY = data.y;
+                el.style.zIndex = 100;
+            }
+
+            function doDrag(clientX, clientY) {
+                if (!isDragging) return;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                data.x = initialX + dx;
+                data.y = initialY + dy;
+                el.style.transform = `translate(${data.x}px, ${data.y}px) scale(1.05)`; 
+            }
+
+            function endDrag() {
+                if(isDragging) { 
+                    isDragging = false; 
+                    el.style.zIndex = baseZIndex; 
+                    el.style.transform = `translate(${data.x}px, ${data.y}px) scale(1)`; 
+                }
+            }
+
+            // Mouse Events
+            el.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+            window.addEventListener('mousemove', (e) => doDrag(e.clientX, e.clientY));
+            window.addEventListener('mouseup', endDrag);
+
+            // Touch Events
+            el.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+            window.addEventListener('touchmove', (e) => doDrag(e.touches[0].clientX, e.touches[0].clientY), {passive: false});
+            window.addEventListener('touchend', endDrag);
+
             vase.appendChild(el);
-            
-            // Setup Dragging
-            makeDraggable(el, data);
         }
 
-        function updateElementTransform(el, x, y, rot) {
-            // Coordinate system: 0,0 is bottom center of vase
-            el.style.left = `calc(50% + ${x}px)`;
-            el.style.bottom = `${y}px`;
-            el.style.transform = `translateX(-50%) rotate(${rot}deg)`;
-        }
-
-        function makeDraggable(el, dataRef) {
-            let startX, startY, initialLeftOffset, initialBottomOffset;
-
-            const onPointerDown = (e) => {
-                if(app.classList.contains('view-mode')) return; // No dragging in receiver mode
-                initAudio();
-                e.preventDefault();
-                const pointer = e.type.includes('touch') ? e.touches[0] : e;
-                startX = pointer.clientX;
-                startY = pointer.clientY;
-                
-                // Get current pixel offsets relative to vase
-                const vaseRect = vase.getBoundingClientRect();
-                const elRect = el.getBoundingClientRect();
-                
-                // Temporarily increase z-index while dragging
-                el.style.zIndex = 50;
-
-                document.addEventListener(e.type.includes('touch') ? 'touchmove' : 'mousemove', onPointerMove, {passive: false});
-                document.addEventListener(e.type.includes('touch') ? 'touchend' : 'mouseup', onPointerUp);
-            };
-
-            const onPointerMove = (e) => {
-                e.preventDefault();
-                const pointer = e.type.includes('touch') ? e.touches[0] : e;
-                const dx = pointer.clientX - startX;
-                const dy = pointer.clientY - startY; // dy is positive when moving DOWN screen
-                
-                // update dataRef instantly
-                dataRef.x += dx;
-                dataRef.y -= dy; // subtract because bottom coordinate goes up
-                
-                startX = pointer.clientX;
-                startY = pointer.clientY;
-                
-                updateElementTransform(el, dataRef.x, dataRef.y, dataRef.rot);
-            };
-
-            const onPointerUp = (e) => {
-                // Reset z-index based on type
-                el.style.zIndex = dataRef.isMain ? 12 : 15;
-                document.removeEventListener('mousemove', onPointerMove);
-                document.removeEventListener('mouseup', onPointerUp);
-                document.removeEventListener('touchmove', onPointerMove);
-                document.removeEventListener('touchend', onPointerUp);
-                playPop(); // small feedback
-            };
-
-            el.addEventListener('mousedown', onPointerDown);
-            el.addEventListener('touchstart', onPointerDown, {passive: false});
-        }
-
-        function updateWrapperColor() {
-            const color = wrapColorInput.value;
-            wrapperFront.style.borderTopColor = color;
-            // Slightly darken for the back
-            wrapperBack.style.borderTopColor = shadeColor(color, -20);
-        }
-
-        // Helper to darken hex colors
-        function shadeColor(color, percent) {
-            let R = parseInt(color.substring(1,3),16);
-            let G = parseInt(color.substring(3,5),16);
-            let B = parseInt(color.substring(5,7),16);
-            R = parseInt(R * (100 + percent) / 100);
-            G = parseInt(G * (100 + percent) / 100);
-            B = parseInt(B * (100 + percent) / 100);
-            R = (R<255)?R:255;  
-            G = (G<255)?G:255;  
-            B = (B<255)?B:255;  
-            let RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-            let GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-            let BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-            return "#"+RR+GG+BB;
-        }
-
-        messageInput.addEventListener('input', (e) => {
-            tagText.textContent = e.target.value || 'For you...';
+        // UI Listeners
+        wrapColorInput.addEventListener('input', (e) => wrapperFront.style.borderTopColor = e.target.value);
+        wrapPatternSelect.addEventListener('change', (e) => wrapperFront.className = 'wrapper-front ' + e.target.value);
+        
+        envColorInput.addEventListener('input', (e) => {
+            const hex = e.target.value;
+            document.getElementById('envFront').style.borderBottomColor = hex;
+            document.getElementById('envBack').style.backgroundColor = pSBC(0.05, hex);
+            document.getElementById('envFlap').style.borderTopColor = pSBC(-0.1, hex);
         });
 
-        function clearBouquet() {
-            vase.innerHTML = '';
-            itemsData = [];
-            itemCount = 0;
-            updateCapacityUI();
-            messageInput.value = '';
-            tagText.textContent = 'For you...';
-            wrapColorInput.value = '#ffe4e1';
-            updateWrapperColor();
-        }
+        messageInput.addEventListener('input', (e) => tagText.textContent = e.target.value || 'For you...');
 
-        function toggleTheme() {
-            isDarkMode = !isDarkMode;
-            document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-            document.querySelector('.theme-toggle').textContent = isDarkMode ? '☀️ Daylight Mode' : '🌙 Midnight Mode';
-        }
+        envelope.addEventListener('click', () => {
+            if(!envelope.classList.contains('open')) {
+                envelope.classList.add('open');
+                document.getElementById('hintText').style.display = 'none';
+                playPop();
+            }
+        });
 
         function generateShareLink() {
-            try {
-                const payload = {
-                    items: itemsData,
-                    color: wrapColorInput.value,
-                    msg: messageInput.value,
-                    dark: isDarkMode
-                };
-                // Safe base64 encoding for emojis/unicode
-                const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-                const shareUrl = `${window.location.origin}${window.location.pathname}?gift=${encoded}`;
-                
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert("💌 Link copied! Send it to someone special. They will experience the unboxing animation.");
-                });
-            } catch (err) {
-                alert("Error generating link.");
-            }
-        }
-
-        function downloadImage() {
-            const frame = document.getElementById('exportFrame');
-            // Hide UI elements we don't want in screenshot if necessary
-            html2canvas(frame, { backgroundColor: null, scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'my-bloom-box.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+            const payload = {
+                i: bouquetData,
+                w: wrapColorInput.value,
+                p: wrapPatternSelect.value,
+                e: envColorInput.value,
+                m: messageInput.value,
+                d: document.body.classList.contains('dark-mode'),
+                mu: isMusicPlaying
+            };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?gift=${encoded}`;
+            
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert("💌 Link copied! Send it to someone special. They will see your exact arrangement.");
             });
         }
 
-        let receiverPayload = null;
-
         window.onload = () => {
-            updateWrapperColor(); // set initial shades
-            
             const params = new URLSearchParams(window.location.search);
             if (params.has('gift')) {
-                app.classList.add('view-mode');
-                receiverOverlay.style.display = 'flex';
+                document.getElementById('app').classList.add('view-mode');
+                document.getElementById('hintText').style.display = 'block'; 
+                document.getElementById('receiverMusicBtn').style.display = 'block';
                 
                 try {
-                    receiverPayload = JSON.parse(decodeURIComponent(escape(atob(params.get('gift')))));
+                    const decoded = JSON.parse(decodeURIComponent(atob(params.get('gift'))));
                     
-                    // Apply saved environment state immediately
-                    wrapColorInput.value = receiverPayload.color;
-                    updateWrapperColor();
-                    tagText.textContent = receiverPayload.msg || 'For you...';
-                    if(receiverPayload.dark) toggleTheme();
-
-                } catch(e) {
-                    console.error("Invalid gift link", e);
-                    receiverOverlay.innerHTML = "<h2>Oops, this gift link is broken.</h2>";
-                }
+                    if(decoded.d) document.body.classList.add('dark-mode');
+                    wrapperFront.style.borderTopColor = decoded.w;
+                    wrapperFront.className = 'wrapper-front ' + decoded.p;
+                    
+                    const envColor = decoded.e;
+                    document.getElementById('envFront').style.borderBottomColor = envColor;
+                    document.getElementById('envBack').style.backgroundColor = pSBC(0.05, envColor);
+                    document.getElementById('envFlap').style.borderTopColor = pSBC(-0.1, envColor);
+                    
+                    tagText.textContent = decoded.m || 'For you...';
+                    
+                    decoded.i.forEach(item => { 
+                        bouquetData.push(item); 
+                        renderItem(item); 
+                    });
+                } catch(e) { console.error("Invalid link or payload"); }
             }
         };
 
-        function untieBox() {
-            initAudio();
-            playCrinkle();
-            
-            // Fade out overlay
-            receiverOverlay.style.opacity = '0';
-            setTimeout(() => {
-                receiverOverlay.style.display = 'none';
-                
-                // Animate items falling in
-                if(receiverPayload && receiverPayload.items) {
-                    receiverPayload.items.forEach((item, index) => {
-                        setTimeout(() => {
-                            renderItemElement(item);
-                            if(item.emoji === '✨') playChime();
-                            else playPop();
-                        }, index * 250); // stagger animations
-                    });
-                }
-            }, 800);
+        function pSBC(p,c0){
+            let r=parseInt(c0.slice(1,3),16),g=parseInt(c0.slice(3,5),16),b=parseInt(c0.slice(5,7),16);
+            return "#"+(0x1000000+(Math.round((0-r)*p)+r)*0x10000+(Math.round((0-g)*p)+g)*0x100+(Math.round((0-b)*p)+b)).toString(16).slice(1);
         }
     </script>
 </body>
